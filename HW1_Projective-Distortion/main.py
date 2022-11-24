@@ -9,7 +9,7 @@ from functions import *
 import matplotlib
 matplotlib.use("TkAgg")
 
-# Machine Problem 1:
+# Homework 1:
 # Remove projective distortion on a given image
 # at least 4pts on target image known
 
