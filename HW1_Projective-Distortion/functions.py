@@ -22,6 +22,7 @@ def select_pts(im):
      plt.imshow(im)             # show image
      xx = plt.ginput(4)         # use pyplot to select four points
      xx.append(xx[0])           # saved into vector of coordinates of points selected
+                                # append first pt at end to form ractangle
      return xx
 
 # --------------------------------------------------
@@ -29,23 +30,31 @@ def select_pts(im):
 # Generate ground truth
 def get_rect(xx):
     plt.figure(2)
- 
-    zzd = np.zeros((5,3))   
+    
+    zzd = np.zeros((5,3))   # rows, columns
     for ii in range(len(xx)-1):         
-        x1 =xx[ii][0]; y1=xx[ii][1]
+        x1 = xx[ii][0]; y1 = xx[ii][1]
         zzd[ii,0] = x1; zzd[ii,1] = y1; zzd[ii,2] = 1; 
-        plt.plot([xx[ii][0],xx[ii+1][0]], [xx[ii][1],xx[ii+1][1]], 'ro-') 
+        plt.plot([xx[ii][0],xx[ii+1][0]], [xx[ii][1],xx[ii+1][1]], 'ro-')   # show 4 pts selected
+
     jj = 0
-    aa = [0,0,1,0,1,3,0,3]
+    aa = [0,0,1,0,1,3,0,3]                                                  # (0,1) --- (3,1) 
+                                                                            #   |         |
+                                                                            # (0,0) --- (3,0)
     zz = np.zeros((5,3))     
     for ii in range(len(zzd)-1):
             zz[ii,0] = zzd[aa[jj],0] 
             zz[ii,1] = zzd[aa[jj+1],1] 
             zz[ii,2] = 1;   
             jj = jj+2
-    zz[4,:] = zz[0,:]
+    zz[4,:] = zz[0,:]                                                       # [initital:end:indexjump]
+
+    # stackoverflow.com/questions/3190483/transform-quadrilateral-into-a-rectangle
+    # stackoverflow.com/questions/33283088/transform-irregular-quadrilateral-to-rectangle-in-python-matplotlib
+
     for ii in range(4):      
-        plt.plot([zz[ii,0],zz[ii+1,0]], [zz[ii,1],zz[ii+1,1]], 'go-')
+        plt.plot([zz[ii,0],zz[ii+1,0]], [zz[ii,1],zz[ii+1,1]], 'go-')       # show adjusted rectangle
+
     plt.show()
     return zz[0:4,:],zzd[0:4,:]    
         
@@ -64,17 +73,19 @@ def norm(zz):
     
     for ii in range(ff_xx.shape[1]):
         mu_r[:,ii] = mu
-
-    mu_dist = np.mean((np.sum((ff_xx[0:2] - mu_r)**2,axis =0))**0.5)    # average of Euclidean distance between the points and the cenetr of the region
+                                                                        # subtract mean from the points
+    mu_dist = np.mean((np.sum((ff_xx[0:2] - mu_r)**2,axis =0))**0.5)    # average of Euclidean distance between the points and the center of the region
 
     # Scale such that average distance x to center is √2
     scale =  (2**0.5/mu_dist)
 
-    #Translation
+    #Translation - move the center by scale value
     s0 = -scale*mu[0]
     s1 = -scale*mu[1]
 
-    # Scaling Matrix, S
+    # Scaling Matrix, S          ( s  0  s0 )
+    #                            | 0  s  s1 |
+    #                            ( 0  0   1 )
     S = np.array([[scale, 0, s0],[0, scale, s1], [0, 0, 1]])
     normalized_zz = S@ff_xx                                             # Product of transformation and the points
     return normalized_zz, S
@@ -88,7 +99,8 @@ def compute_A(uu,vv):
     jj = 0
     for ii in range(uu.shape[0]+1):
         # Compute for coefficients
-        a = (  np.zeros((1,3))[0]  )       
+        # last corrdinate of rectangle time ith pt in original image
+        a = (  np.zeros((1,3))[0]  )                                    # for the two zeroes
         b = ( -uu[2,ii] * vv[:,ii] ) 
         c =    uu[1,ii] * vv[:,ii]
         d =    uu[2,ii] * vv[:,ii]
@@ -169,7 +181,7 @@ def array2image(nrows,ncols,im,bounds,trasf_prec,nsamples):
     xxq  = np.linspace(1, rows, rows).astype(np.int)
     yyq  = np.linspace(1, cols, cols).astype(np.int)
     [x,y] = np.meshgrid(yyq,xxq) 
-    x = (x - 1).astype(np.int) #Offset x and y relative to region origin.
+    x = (x - 1).astype(np.int) # Offset x and y relative to region origin.
     y = (y - 1).astype(np.int) 
         
     ix = np.random.randint(im.shape[1], size=nsamples)
