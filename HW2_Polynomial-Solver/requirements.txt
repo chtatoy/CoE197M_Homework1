@@ -1,0 +1,6 @@
+tinygrad
+csv
+pandas
+matplotlib
+numpy
+sympy
