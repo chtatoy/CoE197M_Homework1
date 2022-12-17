@@ -32,3 +32,7 @@ Please make the appropriate changes for your system and try again.
 --------------------------------------------------
 
 already have admin privileges, will try to solve 'easy install deprecated' error
+
+--------------------------------------------------
+
+conda install -c conda-forge pocl pyopencl clinfo
