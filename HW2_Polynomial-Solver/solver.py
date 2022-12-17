@@ -6,6 +6,10 @@
 from tinygrad.tensor import Tensor
 import tinygrad.nn.optim as optim
 
+# Use data_train.csv to estimate the degree and coefficients of a polynomial
+# Use data_test.csv to test the generalization of the learned function
+
+
 class TinyBobNet:
   def __init__(self):
     self.l1 = Tensor.uniform(784, 128)

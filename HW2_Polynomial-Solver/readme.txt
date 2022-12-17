@@ -1,4 +1,4 @@
-Objective 
+Objective:
 
 SGD is a useful algorithm with many applications. In this assignment, we will use SGD in the TinyGrad framework as polynomial solver - to find the degree and coefficients.
 
