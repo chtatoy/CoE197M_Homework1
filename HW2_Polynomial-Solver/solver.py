@@ -5,10 +5,15 @@
 # Homework 2:
 from tinygrad.tensor import Tensor
 import tinygrad.nn.optim as optim
+import csv
 
 # Use data_train.csv to estimate the degree and coefficients of a polynomial
-# Use data_test.csv to test the generalization of the learned function
+a = open('data_train.csv','r')
+data_train = csv.reader(a)
 
+# Use data_test.csv to test the generalization of the learned function
+b = open('data_test.csv','r')
+data_test = csv.reader(b)
 
 class TinyBobNet:
   def __init__(self):
@@ -22,9 +27,14 @@ model = TinyBobNet()
 optim = optim.SGD([model.l1, model.l2], lr=0.001)
 
 # ... and complete like pytorch, with (x,y) data
+x = data_train
+y = data_test
 
 out = model.forward(x)
 loss = out.mul(y).mean()
 optim.zero_grad()
 loss.backward()
 optim.step()
+
+a.close()
+b.close()
