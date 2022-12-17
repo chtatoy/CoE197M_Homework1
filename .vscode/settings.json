@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./HW2_Polynomial-Solver/tinygrad"
+    ]
+}
