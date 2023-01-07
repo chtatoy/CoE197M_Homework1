@@ -74,3 +74,5 @@ print(y_test)
 # 8. Inferring the result obtained
 # 9. Plotting the result
 
+# https://www.youtube.com/watch?v=RRtheUYwmpg&list=PLVSHIsES-ptaQIXjjv6bCVqxn_2dUEUzy&index=10
+
